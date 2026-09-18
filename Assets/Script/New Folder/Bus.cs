@@ -5,18 +5,18 @@ public class BusController : MonoBehaviour
 {
     [Header("Lane Settings")]
     [Tooltip("ระยะห่างระหว่างแต่ละเลน (หน่วยเป็นเมตร)")]
-    public float laneDistance = 3.0f;
+    public float laneDistance = 3.0f; 
     [Tooltip("ความเร็วในการเลื่อนเปลี่ยนเลน")]
     public float laneChangeSpeed = 10.0f;
-
+    
     // 0 = เลนซ้ายสุด, 1 = เลนกลาง, 2 = เลนขวาสุด
-    private int currentLane = 1;
+    private int currentLane = 1; 
 
     [Header("Speed Settings")]
     public float normalSpeed = 15.0f;     // ความเร็วปกติเมื่อวิ่ง Endless
     public float decelerationRate = 10.0f; // ความเร็วในการเบรกชะลอรถ (ยิ่งมากยิ่งหยุดไว)
     public float accelerationRate = 5.0f;  // ความเร็วในการเร่งกลับไปความเร็วปกติ
-
+    
     private float currentSpeed;
     private bool isBraking = false;
 
