@@ -8,5 +8,29 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/8/8-Start.unity
+    guid: 5ecb067055feea34e8d8831cfcf7b814
+  - enabled: 1
+    path: Assets/Scenes/8/8-Play.unity
+    guid: 6cede299aafac284d9ca7ad85008a2c6
+  - enabled: 1
+    path: Assets/Scenes/8/8-End.unity
+    guid: c8b91eade4d40da49b07fbdd288680af
+  - enabled: 1
+    path: Assets/Scenes/Earth/Played.unity
+    guid: ccf10e530a4239244963872f11752426
+  - enabled: 1
+    path: Assets/Scenes/Earth/Start.unity
+    guid: 08aa1dd6b2115c141a62d08c106e60be
+  - enabled: 1
+    path: Assets/Scenes/Earth/End.unity
+    guid: b5163db5b3424f74bb56c69dfddc9e47
+  - enabled: 1
+    path: Assets/Scenes/4.unity
+    guid: fc984766547feab46b36109da5437e2b
+  - enabled: 1
+    path: Assets/Scenes/Earth/Play.unity
+    guid: 676dbd3f2ccabc941a31637f05be460c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
