@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469c24fdb3bd6431b92cc1465bd9166b, type: 3}
+  m_Name: RemoteConfigDataStoreAsset
+  m_EditorClassIdentifier: Unity.RemoteConfig.Editor::Unity.RemoteConfig.Editor.RemoteConfigDataStore
+  _rsKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6121a985-191d-4797-a505-8e9fc2066b35\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"Left_Button\",\r\n      \"type\": \"string\",\r\n      \"value\": \"Left_Button_Event\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"53838ccd-d81b-46fd-858d-72aeb91a07e6\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"Right_Button\",\r\n      \"type\": \"string\",\r\n      \"value\": \"Right_Button_Event\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"0f5fb9fc-0c06-4fd7-a9ab-c9251ea02377\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"isEvent\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n    }\r\n  }\r\n]"
+  _rsLastCachedKeyList: "[\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"6121a985-191d-4797-a505-8e9fc2066b35\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"Left_Button\",\r\n      \"type\": \"string\",\r\n      \"value\": \"Left_Button_Event\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"53838ccd-d81b-46fd-858d-72aeb91a07e6\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"Right_Button\",\r\n      \"type\": \"string\",\r\n      \"value\": \"Right_Button_Event\"\r\n    }\r\n  },\r\n  {\r\n    \"metadata\": {\r\n      \"entityId\": \"0f5fb9fc-0c06-4fd7-a9ab-c9251ea02377\"\r\n    },\r\n    \"rs\": {\r\n      \"key\": \"isEvent\",\r\n      \"type\": \"bool\",\r\n      \"value\": false\r\n    }\r\n  }\r\n]"
+  _environments: "[\r\n  {\r\n    \"projectId\": \"a7f79541-65c2-45a7-8691-45bd012507f8\",\r\n    \"name\": \"production\",\r\n    \"id\": \"33598098-7dd4-45c3-9b3e-4d9f45d369f3\",\r\n    \"isDefault\": true,\r\n    \"createdAt\": \"2026-10-01T18:05:57Z\",\r\n    \"updatedAt\": \"2026-10-01T18:05:57Z\"\r\n  }\r\n]"
