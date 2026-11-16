@@ -135,30 +135,6 @@ namespace Solution
             RandomDamageToListEnemies();
         }
 
-        private void PlaceItemsOnMap(int count, GameObject[] prefab, Transform parent, string itemType, System.Action onComplete = null)
-        {
-            int placedCount = 0;
-            int preventInfiniteLoop = 1000;
-
-            while (placedCount < count)
-            {
-                if (--preventInfiniteLoop < 0)
-                {
-                    Debug.LogWarning("Could not place all items. Map may be too full.");
-                    break;
-                }
-
-                int x = UnityEngine.Random.Range(0, X);
-                int y = UnityEngine.Random.Range(0, Y);
-
-                if (mapdata[x, y] == null)
-                {
-                    SetUpItem(x, y, prefab, parent, itemType);
-                    placedCount++;
-                }
-            }
-            onComplete?.Invoke();
-        }
         private void SetUpNpc()
         {
             mapdata[Npc.positionX, Npc.positionY] = Npc;
@@ -291,23 +267,17 @@ namespace Solution
             SetUpNpc();
         }
 
-        // ตัวที่ GenerateMap เรียก: ใช้ช่องที่ถูกจองอยู่ใน mapdata ตอนนี้ (ผู้เล่น ทางออก NPC) เป็นช่องห้ามผ่าน
         private void CarvePath()
         {
             CarvePath(BuildOccupied());
         }
 
-        // ตัวหลัก: รับตารางช่องห้ามผ่านเข้ามา (ตัวทดสอบส่งตารางของตัวเองเข้ามาเรียกตัวนี้โดยตรง)
         private void CarvePath(bool[,] blocked)
         {
             if (TryCarve(blocked)) return;
-
-            // ถึงทางออกไม่ได้ เพราะ NPC ล้อมทางออกหรือปิดทางหมด: เจนทางโดยไม่หลบ เพื่อให้เกมยังเล่นต่อได้
-            Debug.LogWarning("NPC ปิดทางจนไปทางออกไม่ได้ ให้ย้าย NPC ออกจากรอบทางออก (เจนทางโดยไม่หลบ NPC ไปก่อน)");
             TryCarve(new bool[mapWidth, mapHeight]);
         }
 
-        // เดินหาทางด้วย Stack (ถอยกลับเมื่อตัน) คืน true ถ้าถึงทางออก
         private bool TryCarve(bool[,] blocked)
         {
             pathMap = new bool[mapWidth, mapHeight];
@@ -332,11 +302,11 @@ namespace Solution
 
                     if (seedrng.NextDouble() < goalBias)
                     {
-                        int best = int.MaxValue;
+                        int bestWay = int.MaxValue;
                         foreach (Vector2Int n in neighbors)
                         {
                             int distanceN = Mathf.Abs(n.x - exitCell.x) + Mathf.Abs(n.y - exitCell.y);
-                            if (distanceN < best) { best = distanceN; next = n; }
+                            if (distanceN < bestWay) { bestWay = distanceN; next = n; }
                         }
                     }
 
@@ -349,8 +319,7 @@ namespace Solution
                 }
             }
 
-            if (!reached) return false;   // หมดทางถอย ไม่ถึงทางออก (pathMap/pathCells ถูกรีเซ็ตโดยรอบถัดไป)
-
+            if (!reached) return false;
             pathCells.AddRange(stack);
             pathCells.Reverse();
             foreach (Vector2Int cell in pathCells)
@@ -369,7 +338,7 @@ namespace Solution
                 bool inside = n.x >= 0 && n.x < mapWidth && n.y >= 0 && n.y < mapHeight;
                 if (!inside) continue;
                 if (visited[n.x, n.y]) continue;
-                if (blocked[n.x, n.y] && n != exitCell) continue;   // ช่องที่ถูกจอง (NPC) เดินผ่านไม่ได้ ยกเว้นทางออกที่เป็นปลายทาง
+                if (blocked[n.x, n.y] && n != exitCell) continue;
 
                 result.Add(n);
             }
@@ -484,14 +453,14 @@ namespace Solution
         {
             if (checkpointPrefab == null)
             {
-                Debug.LogWarning("ยังไม่ได้ใส่ checkpointPrefab ใน Inspector");
+                Debug.LogWarning("checkpointPrefab = null");
                 return;
             }
 
             Vector2Int? cell = FindCheckpointCell(BuildOccupied());
             if (!cell.HasValue)
             {
-                Debug.LogWarning("หาช่องข้างทางสำหรับ Checkpoint ไม่ได้");
+                Debug.LogWarning("Can't find a cell for the checkpoint.");
                 return;
             }
 
@@ -564,7 +533,6 @@ namespace Solution
             }
         }
 
-        // ---------- ตั้งค่าตามชั้น ----------
         private void ApplyFloorConfig(int floor)
         {
             if (floors == null || floors.Length == 0) floors = FloorConfig.CreateDefault();
@@ -575,7 +543,6 @@ namespace Solution
             colloctItemCount = activeConfig.collectItemCount;
         }
 
-        // ---------- สร้าง / ล้างแมป ----------
         public void LoadFloor(int seed, int floor)
         {
             ClearMap();
@@ -593,8 +560,6 @@ namespace Solution
             generatedObjects.Clear();
             mapdata = new Identity[X, Y];
         }
-
-        // ---------- เปลี่ยนชั้น ----------
         public void NextFloor()
         {
             StartCoroutine(NextFloorRoutine());
@@ -602,7 +567,7 @@ namespace Solution
 
         private IEnumerator NextFloorRoutine()
         {
-            yield return null;   // รอให้ Move() ของเฟรมนี้จบก่อน ไม่งั้นลิสต์ศัตรูถูกแก้ระหว่างวนลูป
+            yield return null;
             if (IsLastFloor) yield break;
 
             LoadFloor(currentSeed, currentFloor + 1);
@@ -611,7 +576,6 @@ namespace Solution
             RandomDamageToListEnemies();
         }
 
-        // ---------- เซฟ / โหลด ----------
         public void LoadCheckpoint()
         {
             CheckpointData d = SaveManager.Load(SaveManager.currentSlot);
@@ -640,7 +604,6 @@ namespace Solution
 
         public void ApplyEnemyStates(List<EnemyState> states)
         {
-            // 1. เคลียร์ศัตรูทุกตัวออกจากช่องก่อน กันตำแหน่งชนกัน
             for (int i = 0; i < allEnemies.Count; i++)
             {
                 OOPEnemy e = allEnemies[i];
@@ -648,7 +611,6 @@ namespace Solution
                     mapdata[e.positionX, e.positionY] = null;
             }
 
-            // 2. ตัวที่ไม่อยู่ในเซฟ = ตายไปแล้ว ปิดทิ้ง
             HashSet<int> alive = new HashSet<int>();
             foreach (EnemyState s in states) alive.Add(s.index);
             for (int i = 0; i < allEnemies.Count; i++)
@@ -658,7 +620,6 @@ namespace Solution
                 allEnemies[i].gameObject.SetActive(false);
             }
 
-            // 3. ตัวที่เหลือ: ใส่ตำแหน่งและพลังงานตามเซฟ
             foreach (EnemyState s in states)
             {
                 if (s.index < 0 || s.index >= allEnemies.Count) continue;
@@ -670,7 +631,6 @@ namespace Solution
             }
         }
 
-        // ย้ายวัตถุไปช่องใหม่ (เขียนตาราง + ตำแหน่งจริง) ใช้ทั้งโหลดเซฟและ Undo
         public void MoveIdentityTo(Identity obj, int x, int y)
         {
             if (obj == null) return;
@@ -690,7 +650,6 @@ namespace Solution
         [ContextMenu("Test Paths (All Seeds)")]
         public void TestAllSeeds()
         {
-            // สำรองค่าเดิม เพื่อไม่ให้ทดสอบแล้วทับแมปที่กำลังเล่นอยู่
             int oldW = mapWidth, oldH = mapHeight;
             Vector2Int oldStart = startCell, oldExit = exitCell;
             System.Random oldRng = seedrng;
@@ -705,7 +664,6 @@ namespace Solution
             startCell = playerStartPos;
             exitCell = new Vector2Int(X - 1, Y - 1);
 
-            // ช่องที่ถูกจองก่อนถึงขั้น PlaceCheckpoint: จุดเริ่ม ทางออก และ NPC (ตรงกับที่ GenerateMap วางไว้)
             bool[,] occupied = new bool[X, Y];
             MarkOccupied(occupied, startCell);
             MarkOccupied(occupied, exitCell);
@@ -722,18 +680,17 @@ namespace Solution
                     if (error != null)
                     {
                         failed++;
-                        if (failed <= 10)   // แสดงแค่ 10 ตัวแรก ไม่ให้ Console ท่วม
+                        if (failed <= 10)
                             Debug.LogError("FAIL seed=" + s + " floor=" + floor + " : " + error);
                     }
                 }
             }
 
             if (failed == 0)
-                Debug.Log("PASS: ทางถึงทางออก + Checkpoint อยู่ข้างทางทุกรอบ (" + total + " รอบ, seed " + testFromSeed + "-" + testToSeed + ", ชั้น 1-4)");
+                Debug.Log("PASS: ทางถึงทางออก + Checkpoint (" + total + " รอบ, seed " + testFromSeed + "-" + testToSeed + ", ชั้น 1-4)");
             else
                 Debug.LogError("FAIL " + failed + " จาก " + total + " รอบ");
 
-            // คืนค่าเดิมทั้งหมด
             mapWidth = oldW; mapHeight = oldH;
             startCell = oldStart; exitCell = oldExit;
             seedrng = oldRng; pathMap = oldMap; pathCells = oldCells;
@@ -750,15 +707,14 @@ namespace Solution
 
         private string CheckOneSeed(int s, int floor, bool[,] occupied)
         {
-            ApplyFloorConfig(floor);                     // ใช้ค่าของชั้นนั้นจริง (goalBias ต่างกันแต่ละชั้น)
-            seedrng = new System.Random(s + floor);      // ต้องตรงกับที่ GenerateMap ใช้
+            ApplyFloorConfig(floor);
+            seedrng = new System.Random(s + floor);
             CarvePath(occupied);
             List<Vector2Int> first = new List<Vector2Int>(pathCells);
 
-            // ---------- ตรวจทางเดิน ----------
             if (first.Count == 0) return "pathCells ว่าง";
-            if (first[0] != startCell) return "ไม่ได้เริ่มที่ startCell";
-            if (first[first.Count - 1] != exitCell) return "ไม่ถึง exitCell (ทางตัน)";
+            if (first[0] != startCell) return "ไม่ได้เริ่มที่ startCell(จุดเริ่ม)";
+            if (first[first.Count - 1] != exitCell) return "ไม่ถึง exitCell(ทางตัน)";
 
             HashSet<Vector2Int> seen = new HashSet<Vector2Int>();
             for (int i = 0; i < first.Count; i++)
@@ -777,12 +733,10 @@ namespace Solution
                     if (pathMap[x, y]) trueCount++;
             if (trueCount != first.Count) return "pathMap มีช่องที่ไม่ได้อยู่ในทาง";
 
-            // ---------- ตรวจ Checkpoint ----------
             Vector2Int? cp1 = FindCheckpointCell(occupied);
             string cpError = CheckCheckpointCell(cp1, occupied);
             if (cpError != null) return cpError;
 
-            // ---------- seed เดิมต้องได้ทางเดิมและ Checkpoint ช่องเดิม ----------
             seedrng = new System.Random(s + floor);
             CarvePath(occupied);
             if (pathCells.Count != first.Count) return "seed เดิมแต่ได้ทางความยาวต่างกัน";
@@ -792,10 +746,9 @@ namespace Solution
             Vector2Int? cp2 = FindCheckpointCell(occupied);
             if (!cp2.HasValue || cp2.Value != cp1.Value) return "seed เดิมแต่ Checkpoint อยู่คนละช่อง";
 
-            return null;   // ผ่านทุกข้อ
+            return null;
         }
 
-        // ตรวจว่าช่อง Checkpoint ไม่ปิดทาง ไม่ทับของ และอยู่ติดทางจริง (เดินชนจากทางได้)
         private string CheckCheckpointCell(Vector2Int? cp, bool[,] occupied)
         {
             if (!cp.HasValue) return "หาช่อง Checkpoint ไม่ได้";
@@ -816,25 +769,6 @@ namespace Solution
             if (!nextToPath) return "Checkpoint ไม่ติดทาง เดินชนไม่ได้ " + c;
 
             return null;
-        }
-        private int MapHash()
-        {
-            unchecked
-            {
-                int h = 17;
-                foreach (Vector2Int c in pathCells)
-                    h = h * 31 + c.x * 100 + c.y;
-
-                for (int x = 0; x < mapWidth; x++)
-                    for (int y = 0; y < mapHeight; y++)
-                    {
-                        Identity id = mapdata[x, y];
-                        if (id == null) continue;
-                        h = h * 31 + x * 100 + y;
-                        foreach (char ch in id.Name ?? "") h = h * 31 + ch;
-                    }
-                return h;
-            }
         }
     }
 }
