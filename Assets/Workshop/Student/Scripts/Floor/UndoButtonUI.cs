@@ -23,7 +23,6 @@ namespace Solution
             map.history.Undo();
         }
 
-        // ปิดปุ่มเมื่อกองว่าง หรือผู้เล่นกำลัง auto-move
         public void Refresh()
         {
             button.interactable = map.history.CanUndo();

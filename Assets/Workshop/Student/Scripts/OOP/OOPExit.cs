@@ -19,7 +19,7 @@ namespace Solution
                 if (!mapGenerator.IsLastFloor)
                 {
                     mapGenerator.NextFloor();
-                    return false;   // ผู้เล่นไม่ก้าวเข้าช่องทางออกตานี้ (แมปใหม่จะถูกสร้างตอนจบเฟรม)
+                    return false;
                 }
 
                 // ชั้นสุดท้าย: จบเกมเหมือนเดิม

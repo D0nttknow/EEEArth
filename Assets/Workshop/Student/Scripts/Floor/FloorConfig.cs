@@ -3,23 +3,22 @@ using UnityEngine;
 
 namespace Solution
 {
-    // ข้อมูลตั้งค่าของ "หนึ่งชั้น" ปรับตัวเลขได้ใน Inspector ของ OOPMapGenerator (ช่อง Floors)
     [Serializable]
     public class FloorConfig
     {
         public int floor = 1;
 
-        [Header("ศัตรู")]
+        [Header("Enemies")]
         public int enemyMin = 1;
         public int enemyMax = 2;
-        [Tooltip("จำนวนประเภทศัตรูที่ปลดล็อก นับจากช่องแรกของ Enemy Prefab (ปลดล็อกเพิ่มขึ้นตามชั้น)")]
+        [Tooltip("จำนวนประเภทศัตรู (เพิ่มขึ้นตามชั้น)")]
         public int unlockedEnemyTypes = 1;
 
-        [Header("แมป")]
+        [Header("Map")]
         [Range(0f, 1f)] public float obstacleRate = 0.10f;
-        [Range(0f, 1f)] public float goalBias = 0.8f;   // สูง = ทางตรง ต่ำ = ทางคดเคี้ยว
+        [Range(0f, 1f)] public float goalBias = 0.8f;
 
-        [Header("ไอเทม")]
+        [Header("Items")]
         public int potionCount = 2;
         public int collectItemCount = 1;
 

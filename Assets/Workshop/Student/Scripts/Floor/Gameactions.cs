@@ -9,7 +9,6 @@ namespace Solution
         public abstract void Undo();
     }
 
-    // ย้ายตัวละคร (ผู้เล่นหรือศัตรู) กลับช่องเดิม
     public class MoveAction : GameAction
     {
         private readonly OOPMapGenerator map;
@@ -27,7 +26,6 @@ namespace Solution
         }
     }
 
-    // วัตถุที่หายไป (ไอเทมที่เก็บ กำแพงที่ทำลาย) ต้องใช้ Despawn() ไม่ใช่ Destroy() ถึงจะกู้ได้
     public class PickUpAction : GameAction
     {
         private readonly OOPMapGenerator map;
@@ -49,7 +47,6 @@ namespace Solution
         }
     }
 
-    // ศัตรูที่ตาย
     public class KillEnemyAction : GameAction
     {
         private readonly OOPMapGenerator map;
@@ -74,7 +71,6 @@ namespace Solution
         }
     }
 
-    // คืนจำนวนไอเทมในกระเป๋า (ครอบคลุมทั้งใช้ไอเทมและเก็บไอเทม)
     public class UseItemAction : GameAction
     {
         private readonly OOPPlayer player;
@@ -95,7 +91,6 @@ namespace Solution
         }
     }
 
-    // คืนพลังงาน (ผู้เล่นโดนดาเมจ ศัตรูโดนตี ฮีล)
     public class EnergyAction : GameAction
     {
         private readonly Character who;
@@ -112,11 +107,9 @@ namespace Solution
             who.energy = before;
             OOPEnemy e = who as OOPEnemy;
             if (e != null && e.txtHp != null) e.txtHp.text = e.energy.ToString();
-            // ข้อความพลังงานของผู้เล่นบน UI: ถ้าไม่อัปเดตเอง ให้เรียกเมธอดรีเฟรช UI ของ OOPPlayer ตรงนี้
         }
     }
 
-    // รวมการกระทำทั้งตาไว้ด้วยกัน กด Undo ครั้งเดียวย้อนทั้งตา
     public class TurnAction : GameAction
     {
         private readonly List<GameAction> actions = new List<GameAction>();
@@ -124,7 +117,6 @@ namespace Solution
         public int Count { get { return actions.Count; } }
         public void Add(GameAction a) { actions.Add(a); }
 
-        // ลำดับที่ใส่ = ลำดับที่ย้อน: คืนวัตถุที่หาย -> ย้ายตัวละคร -> คืนพลังงาน -> คืนกระเป๋า
         public override void Undo()
         {
             foreach (GameAction a in actions) a.Undo();
