@@ -63,14 +63,10 @@ namespace Solution
             }
 
         }
-
+        public override MapData Data { get { return MapData.Character; } }
         public virtual void UpdatePosition(int toX, int toY)
         {
-            mapGenerator.mapdata[positionX, positionY] = null;
-            positionX = toX;
-            positionY = toY;
-            transform.position = new Vector3(positionX, positionY, 0);
-            mapGenerator.mapdata[positionX, positionY] = this;
+            mapGenerator.MoveIdentityTo(this, toX, toY);
         }
 
         // hasPlacement คืนค่า true ถ้ามีการวางอะไรไว้บน map ที่ตำแหน่ง x,y
@@ -102,9 +98,6 @@ namespace Solution
 
         public void Heal(int healPoint)
         {
-            // energy += healPoint;
-            // Debug.Log("Current Energy : " + energy);
-            // เราสามารถเรียกใช้ฟังก์ชัน Heal โดยกำหนดให้ Bonuse = false ได้ เพื่อที่จะให้ logic ในการ heal อยู่ที่ฟังก์ชัน Heal อันเดียวและไม่ต้องเขียนซ้ำ
             Heal(healPoint, false);
         }
 
@@ -120,11 +113,7 @@ namespace Solution
 
         protected virtual void CheckDead()
         {
-            if (energy <= 0)
-            {
-                mapGenerator.mapdata[positionX, positionY] = null;
-                Despawn();
-            }
+            if (energy <= 0) Despawn();
         }
         private void UpdateSpriteColorBasedOnHealth()
         {
@@ -146,5 +135,6 @@ namespace Solution
             }
             Debug.Log(name + " Health Percentage: " + (healthPercentage * 100) + "%");
         }
+
     }
 }

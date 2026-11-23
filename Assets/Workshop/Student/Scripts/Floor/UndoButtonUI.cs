@@ -6,7 +6,6 @@ namespace Solution
     public class UndoButtonUI : MonoBehaviour
     {
         [SerializeField] private Button button;
-        public OOPMapGenerator map;
 
         private void Start()
         {
@@ -20,12 +19,12 @@ namespace Solution
 
         public void OnClick()
         {
-            map.history.Undo();
+            if (HistoryManager.Instance != null) HistoryManager.Instance.Undo();
         }
 
         public void Refresh()
         {
-            button.interactable = map.history.CanUndo();
+            button.interactable = HistoryManager.Instance != null && HistoryManager.Instance.CanUndo();
         }
     }
 }

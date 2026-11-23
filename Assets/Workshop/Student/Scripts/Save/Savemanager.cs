@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Solution
 {
-    // จัดการไฟล์เซฟอย่างเดียว (ไม่รู้จักเกม) เรียกใช้จาก Checkpoint และ OOPMapGenerator
     public static class SaveManager
     {
         public static int currentSlot = 1;

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+public enum EnemyType { Wanderer, Stationary, Chaser }
 namespace Solution
 {
 
     public class OOPEnemy : Character
     {
         public TMP_Text txtHp;
+        public EnemyType type = EnemyType.Wanderer;
         public override void SetUP()
         {
             base.SetUP();
@@ -39,7 +41,6 @@ namespace Solution
         {
             if (energy <= 0)
             {
-                mapGenerator.mapdata[positionX, positionY] = null;
                 mapGenerator.EnemysOnMap.Remove(this);
                 Despawn();
             }

@@ -44,6 +44,7 @@ namespace Solution
             {
                 firePressed |= keyboard.eKey.wasPressedThisFrame;
             }
+
             if (firePressed)
             {
                 UseFireStorm();
@@ -54,14 +55,6 @@ namespace Solution
                 return;
             }
 
-            if (keyboard.zKey.wasPressedThisFrame)
-            {
-                actionHistoryManager.UndoLastMove(this);
-            }
-            if (keyboard.xKey.wasPressedThisFrame)
-            {
-                actionHistoryManager.RedoLastMove(this);
-            }
             if (keyboard.qKey.wasPressedThisFrame)
             {
                 actionHistoryManager.StartAutoMoveSequence(this);
@@ -69,9 +62,9 @@ namespace Solution
         }
         public override void Move(Vector2 direction)
         {
-            mapGenerator.history.BeginTurn();
+            HistoryManager.Instance.BeginTurn();
             MoveCore(direction);
-            mapGenerator.history.EndTurn();
+            HistoryManager.Instance.EndTurn();
         }
         public void MoveCore(Vector2 direction)
         {

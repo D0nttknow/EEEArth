@@ -4,20 +4,23 @@ using TMPro;
 
 namespace Solution
 {
-    // หน้าต่างเลือกช่องเซฟ เปิดโดย Checkpoint.Hit()
-    // สำคัญ: ติดสคริปต์นี้ไว้กับวัตถุที่ "เปิดอยู่ตลอด" (เช่น ลูกของ Canvas)
-    // อย่าติดกับตัว Panel เอง เพราะ Panel ถูกปิดตอนเริ่มเกม และสคริปต์จะไม่ทำงาน
     public class SaveSlotUI : MonoBehaviour
     {
         public static SaveSlotUI Instance;
 
+        private enum Mode { Save, Load }
+
         [Header("Required References")]
         public OOPMapGenerator map;
-        public GameObject panel;           // กรอบหน้าต่างที่เปิด/ปิด
-        public Button[] slotButtons;       // ปุ่มช่องเซฟ เรียงช่อง 1 ถึง 4
-        public Button cancelButton;        // ปุ่มข้าม (ไม่เซฟ)
+        public GameObject panel;
+        public Button[] slotButtons;
+        public Button cancelButton;
 
-        private CheckpointData pending;    // ข้อมูลที่ถ่ายไว้ตอนชน Checkpoint รอผู้เล่นเลือกช่อง
+        [Header("Optional")]
+        public TMP_Text titleLabel;
+
+        private Mode mode = Mode.Save;
+        private CheckpointData pending;
 
         public bool IsOpen
         {
@@ -38,7 +41,7 @@ namespace Solution
 
             for (int i = 0; i < slotButtons.Length; i++)
             {
-                int slot = i + 1;   // คัดลอกค่าไว้ ไม่งั้นทุกปุ่มจะได้เลขสุดท้ายเหมือนกัน
+                int slot = i + 1;
                 slotButtons[i].onClick.AddListener(() => OnSlotClicked(slot));
             }
 
@@ -46,26 +49,41 @@ namespace Solution
                 cancelButton.onClick.AddListener(Close);
         }
 
-        // เรียกจาก Checkpoint.Hit() พร้อมข้อมูลที่ถ่ายไว้ ณ ตอนที่ชน
         public void Open(CheckpointData data)
         {
+            if (IsOpen) return;
+            mode = Mode.Save;
             pending = data;
+            Show();
+        }
+
+  
+        public void OpenForLoad()
+        {
+            if (IsOpen) return;
+            mode = Mode.Load;
+            pending = null;
+            Show();
+        }
+
+        private void Show()
+        {
+            if (titleLabel != null)
+                titleLabel.text = mode == Mode.Save ? "Select Save Slot" : "Select Slot to Load";
+
             RefreshSlots();
             panel.SetActive(true);
 
-            // หยุดรับปุ่มเดินระหว่างเลือกช่อง (ปิด Update() ของผู้เล่น)
+
             if (map != null && map.player != null)
                 map.player.enabled = false;
         }
 
-        // เขียนข้อความบนปุ่มว่าแต่ละช่องว่างหรือมีเซฟอะไรอยู่
         private void RefreshSlots()
         {
             for (int i = 0; i < slotButtons.Length; i++)
             {
                 int slot = i + 1;
-                TMP_Text label = slotButtons[i].GetComponentInChildren<TMP_Text>();
-                if (label == null) continue;
 
                 CheckpointData d = null;
                 try
@@ -74,8 +92,13 @@ namespace Solution
                 }
                 catch (System.Exception)
                 {
-                    d = null;   // ไฟล์เสีย ถือว่าว่าง (เซฟใหม่จะทับ)
+                    d = null;
                 }
+
+                slotButtons[i].interactable = (mode == Mode.Save) || (d != null);
+
+                TMP_Text label = slotButtons[i].GetComponentInChildren<TMP_Text>();
+                if (label == null) continue;
 
                 label.text = d == null
                     ? "Slot " + slot + " - Empty"
@@ -85,11 +108,19 @@ namespace Solution
 
         private void OnSlotClicked(int slot)
         {
-            if (pending == null) return;
+            if (mode == Mode.Save)
+            {
+                if (pending == null) return;
 
-            SaveManager.currentSlot = slot;      // จำช่องล่าสุดที่ใช้
-            SaveManager.Save(slot, pending);     // ถ้าช่องนั้นมีเซฟเดิม จะถูกทับ
-            Close();
+                SaveManager.currentSlot = slot;
+                SaveManager.Save(slot, pending);
+                Close();
+            }
+            else
+            {
+                Close();
+                map.LoadCheckpoint(slot);
+            }
         }
 
         public void Close()

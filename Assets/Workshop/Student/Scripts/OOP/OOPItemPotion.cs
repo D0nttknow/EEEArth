@@ -32,8 +32,8 @@ namespace Solution
             }
 
 
-            mapGenerator.mapdata[positionX, positionY] = null;
-            
+            mapGenerator.RemoveFromMap(this);
+
             mapGenerator.player.UpdatePosition(positionX, positionY);
             Despawn();
             return true;

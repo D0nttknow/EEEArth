@@ -8,17 +8,17 @@ namespace Solution
     {
         public int floor = 1;
 
-        [Header("Enemies")]
+        [Header("ศัตรู")]
         public int enemyMin = 1;
         public int enemyMax = 2;
-        [Tooltip("จำนวนประเภทศัตรู (เพิ่มขึ้นตามชั้น)")]
+        [Tooltip("จำนวนประเภทศัตรูที่ปลดล็อก นับจากช่องแรกของ Enemy Prefab (ปลดล็อกเพิ่มขึ้นตามชั้น)")]
         public int unlockedEnemyTypes = 1;
 
-        [Header("Map")]
+        [Header("แมป")]
         [Range(0f, 1f)] public float obstacleRate = 0.10f;
         [Range(0f, 1f)] public float goalBias = 0.8f;
 
-        [Header("Items")]
+        [Header("ไอเทม")]
         public int potionCount = 2;
         public int collectItemCount = 1;
 

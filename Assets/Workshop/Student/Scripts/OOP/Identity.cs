@@ -32,10 +32,13 @@ namespace Solution
         {
             return false;
         }
+        public virtual MapData Data 
+        {
+            get { return MapData.Obstacle; } 
+        }
         public virtual void Despawn()
         {
-            if (mapGenerator != null && mapGenerator.mapdata[positionX, positionY] == this)
-                mapGenerator.mapdata[positionX, positionY] = null;
+            if (mapGenerator != null) mapGenerator.RemoveFromMap(this);
             gameObject.SetActive(false);
         }
     }

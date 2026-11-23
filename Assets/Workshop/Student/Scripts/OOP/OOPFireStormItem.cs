@@ -10,7 +10,7 @@ namespace Solution
         public override bool Hit()
         {
             mapGenerator.player.inventory.AddItem("FireStorm",1);
-            mapGenerator.mapdata[positionX, positionY] = null;
+            mapGenerator.RemoveFromMap(this);
             Despawn();
             return true;
         }

@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Solution
 {
@@ -28,7 +27,7 @@ namespace Solution
             {
                 mapGenerator.player.TakeDamage(Damage);
             }
-            mapGenerator.mapdata[positionX, positionY] = null;
+            mapGenerator.RemoveFromMap(this);
             Despawn();
             return false;
         }
